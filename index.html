@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research Portal</title>
+  <style>
+    :root { --ink:#16202e; --muted:#667085; --line:#d8e0ea; --bg:#eef2f6; --paper:#fff; --navy:#132238; --teal:#0f766e; --blue:#245f9f; --green:#16803c; --amber:#b76a00; --red:#b42318; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+    header { background:var(--navy); color:white; padding:26px 30px; border-bottom:5px solid var(--teal); }
+    main { max-width:1500px; margin:0 auto; padding:22px; }
+    h1 { margin:0 0 8px; font-size:34px; letter-spacing:0; }
+    h2 { margin:28px 0 12px; font-size:22px; letter-spacing:0; }
+    p { margin:0 0 10px; }
+    a { color:var(--blue); font-weight:700; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .subtitle { color:#dce7f5; max-width:920px; font-size:16px; }
+    .meta-row, .controls, .summary-grid, .chip-row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .pill { border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:5px 10px; color:#eff6ff; font-size:12px; }
+    .meta-row { margin-top:16px; }
+    .panel { background:var(--paper); border:1px solid var(--line); padding:18px; margin:18px 0; box-shadow:0 15px 42px rgba(24,36,54,.08); }
+    .summary-card { background:var(--paper); border:1px solid var(--line); min-width:170px; padding:12px 14px; display:flex; justify-content:space-between; gap:12px; }
+    .summary-card span { color:var(--muted); font-weight:750; }
+    .summary-card strong { font-size:22px; }
+    .controls { position:sticky; top:0; z-index:4; background:rgba(238,242,246,.98); border:1px solid var(--line); padding:12px; backdrop-filter:blur(8px); box-shadow:0 8px 20px rgba(24,36,54,.08); }
+    input, select, button { font:inherit; }
+    input[type="search"], select { min-height:36px; border:1px solid var(--line); background:white; padding:6px 10px; border-radius:7px; }
+    input[type="search"] { min-width:300px; flex:1; }
+    button { border:1px solid var(--line); background:white; color:var(--ink); border-radius:7px; padding:7px 10px; cursor:pointer; }
+    button:hover { border-color:var(--blue); color:var(--blue); }
+    .table-panel { overflow:auto; max-height:none; padding:0; }
+    table { width:100%; border-collapse:separate; border-spacing:0; background:white; table-layout:fixed; }
+    th, td { border-bottom:1px solid var(--line); padding:12px 10px; text-align:left; vertical-align:top; background:white; }
+    th { position:static; background:#f8fafc; color:#475467; font-size:12px; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; box-shadow:0 1px 0 var(--line); }
+    th:nth-child(1), td:nth-child(1) { width:64px; }
+    th:nth-child(2), td:nth-child(2) { width:92px; }
+    th:nth-child(3), td:nth-child(3) { width:88px; }
+    th:nth-child(4), td:nth-child(4) { width:72px; }
+    th:nth-child(5), td:nth-child(5) { width:92px; }
+    th:nth-child(6), td:nth-child(6) { width:126px; }
+    th:nth-child(7), td:nth-child(7) { width:280px; }
+    th:nth-child(8), td:nth-child(8) { width:150px; }
+    th:nth-child(9), td:nth-child(9) { width:150px; }
+    th:nth-child(10), td:nth-child(10) { width:160px; }
+    th:nth-child(11), td:nth-child(11) { width:220px; }
+    th:nth-child(12), td:nth-child(12) { width:250px; }
+    tr.reviewed { opacity:.55; }
+    .number { text-align:right; white-space:nowrap; }
+    .strong { font-weight:850; font-size:16px; }
+    .title { font-weight:850; font-size:15px; margin-bottom:4px; }
+    .muted { color:var(--muted); font-size:12px; }
+    .status, .tag, .instrument, .chip-row span { display:inline-flex; align-items:center; border-radius:999px; border:1px solid var(--line); background:#f8fafc; padding:2px 7px; margin:2px 4px 2px 0; font-size:12px; font-weight:750; }
+    .status.ready { color:var(--amber); background:#fff6e5; border-color:#f0cf8b; }
+    .status.reviewed { color:var(--green); background:#eaf7ef; border-color:#b9dfc6; }
+    .instrument { color:var(--blue); background:#eef6ff; border-color:#c9ddf4; }
+    .links { white-space:normal; }
+    .links a, .links button { display:inline-block; margin:0 6px 6px 0; }
+    .links code, .command-box code { display:block; width:100%; margin-top:4px; padding:7px 8px; border:1px solid var(--line); border-radius:7px; background:#f8fafc; color:#263244; font-size:12px; line-height:1.35; white-space:normal; overflow-wrap:anywhere; user-select:all; }
+    .check-cell { text-align:center; }
+    .check-cell input { width:18px; height:18px; }
+    .notice { border-left:4px solid var(--amber); background:#fff8ea; padding:12px 14px; margin:12px 0; }
+    .command-box { border-left:4px solid var(--teal); background:#ecfdf9; padding:14px; margin:12px 0; }
+    .command-box textarea { width:100%; min-height:86px; resize:vertical; border:1px solid var(--line); border-radius:8px; padding:10px; font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:#263244; background:white; }
+    .hidden { display:none; }
+    @media (max-width: 900px) { main { padding:14px; } table { font-size:13px; } th:nth-child(8),td:nth-child(8),th:nth-child(9),td:nth-child(9) { display:none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Research Portal</h1>
+    <p class="subtitle">Sortable cockpit for processed Signal-to-Alpha notes. Durable status lives in Obsidian frontmatter; Code77 regenerates this dashboard after processing, reviewing, or reprioritizing notes.</p>
+    <div class="meta-row">
+      <span class="pill">Generated 2026-06-21 07:40</span>
+      <span class="pill">Ready: 11</span>
+      <span class="pill">Reviewed: 0</span>
+      <span class="pill">Source: DragonShield Research Obsidian</span>
+    </div>
+  </header>
+  <main>
+    <section class="summary-grid"><div class="summary-card"><span>AI Infrastructure</span><strong>4</strong></div><div class="summary-card"><span>AI Market Structure</span><strong>2</strong></div><div class="summary-card"><span>Space Economy</span><strong>2</strong></div><div class="summary-card"><span>Geopolitics</span><strong>1</strong></div><div class="summary-card"><span>Macro Rates And Labor</span><strong>1</strong></div><div class="summary-card"><span>Portfolio Risk</span><strong>1</strong></div></section>
+    <section class="panel">
+      <h2 style="margin-top:0">Pattern Seeds</h2>
+      <p class="muted">These tags are the clustering layer for later pattern, contradiction, and provider-quality reviews.</p>
+      <div class="chip-row"><span>AI compute <b>2</b></span><span>AI rotation <b>2</b></span><span>SpaceX <b>2</b></span><span>chemicals <b>2</b></span><span>materials <b>2</b></span><span>orbital data centers <b>2</b></span><span>AI bottlenecks <b>1</b></span><span>AI capex <b>1</b></span><span>AI economics <b>1</b></span><span>AI information disorder <b>1</b></span><span>AI mid-cycle slowdown <b>1</b></span><span>AI physical layer <b>1</b></span></div>
+      <h2>Instrument Mentions</h2>
+      <div class="chip-row"><span>BTC <b>4</b></span><span>NVDA <b>3</b></span><span>QQQ <b>3</b></span><span>SPY <b>3</b></span><span>CRWV <b>2</b></span><span>ECL <b>2</b></span><span>ENTG <b>2</b></span><span>GLD <b>2</b></span><span>MRVL <b>2</b></span><span>MU <b>2</b></span><span>SPCX <b>2</b></span><span>TLT <b>2</b></span></div>
+    </section>
+    <section class="command-box">
+      <strong>Code77 commands</strong>
+      <p class="muted">Copy one line and paste it into Code77 to make the review status permanent.</p>
+      <textarea readonly>Mark reviewed sig-2026-06-15-22v-ai-rotation
+Mark reviewed sig-2026-05-24-jordi-ai-bottleneck-regime-shift
+Mark reviewed sig-2026-06-14-jordi-ai-mid-cycle
+Mark reviewed sig-2026-06-18-22v-lower-oil
+Mark reviewed sig-2026-06-18-22v-openai-disclosure
+Mark reviewed sig-2026-03-22-lyn-alden-flywheel-chaos
+Mark reviewed sig-2026-06-04-lyn-alden-wild-west
+Mark reviewed sig-2026-06-07-jordi-ai-rotation-not-bubble
+Mark reviewed sig-2026-06-14-bg2-spacex-fable-ai-capex
+Mark reviewed sig-2026-06-04-22v-spacex-ipo
+Mark reviewed sig-2026-06-04-22v-payroll-survey</textarea>
+    </section>
+    <section class="notice" id="notice">Ticking a checkbox here is a local visual aid. To make it permanent, copy the row command or one line from the command box above into Code77; the Obsidian note and dashboard will then be regenerated.</section>
+    <section class="controls">
+      <input id="search" type="search" placeholder="Search title, provider, cluster, tags, instruments...">
+      <select id="statusFilter"><option value="">All status</option><option value="ready">Ready</option><option value="reviewed">Reviewed</option></select>
+      <select id="clusterFilter"><option value="">All clusters</option><option value="AI Infrastructure">AI Infrastructure</option><option value="AI Market Structure">AI Market Structure</option><option value="Space Economy">Space Economy</option><option value="Geopolitics">Geopolitics</option><option value="Macro Rates And Labor">Macro Rates And Labor</option><option value="Portfolio Risk">Portfolio Risk</option></select>
+      <button type="button" data-sort="priority">Sort Priority</button>
+      <button type="button" data-sort="date">Sort Date</button>
+      <button type="button" data-sort="aging">Sort Aging</button>
+    </section>
+    <section class="panel table-panel">
+      <table id="queue">
+        <thead>
+          <tr>
+            <th>Done</th><th>Status</th><th data-sort="priority">Priority</th><th data-sort="aging">Aging</th><th data-sort="date">Date</th><th>Provider</th><th>Research Note</th><th>Cluster</th><th>Instruments</th><th>Route</th><th>Next Step</th><th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr class="ready" data-status="ready" data-provider="22V Research" data-cluster="AI Infrastructure" data-priority="96" data-date="2026-06-15">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-15-22v-ai-rotation"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">96</td>
+              <td class="number">5</td>
+              <td>2026-06-15</td>
+              <td>22V Research</td>
+              <td>
+                <div class="title">22V Daily: AI rotation, regional banks, ECL, and QQQ calls</div>
+                <div class="muted">Highest value because it combines AI rotation, ENTG, ECL reinforcement, KRE/USB, and market concentration signals.</div>
+                <div class="tags"><span class="tag">AI rotation</span><span class="tag">physical-layer beneficiaries</span><span class="tag">materials</span><span class="tag">chemicals</span><span class="tag">regional banks</span></div>
+              </td>
+              <td>AI Infrastructure<div class="muted">AI Market Structure, Regional Banks And Cyclicals</div></td>
+              <td><span class="instrument">ENTG</span><span class="instrument">ECL</span><span class="instrument">KRE</span><span class="instrument">USB</span><span class="instrument">QQQ</span><span class="instrument">SPY</span></td>
+              <td>Watchlist + daily agenda<div class="muted">Research action, not trade action</div></td>
+              <td>Review first; decide whether ENTG and KRE/USB should enter the Investment Ideas watchlist.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-22v-daily-ai-rotation-cyclicals-2026-06-15.html">Report</a>
+                <a href="notes/sig-2026-06-15-22v-ai-rotation.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-15-22v-ai-rotation">Copy</button>
+                <code>Mark reviewed sig-2026-06-15-22v-ai-rotation</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="22V Research" data-cluster="AI Infrastructure" data-priority="94" data-date="2026-05-24">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-05-24-jordi-ai-bottleneck-regime-shift"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">94</td>
+              <td class="number">8</td>
+              <td>2026-05-24</td>
+              <td>22V Research</td>
+              <td>
+                <div class="title">Not a Bubble, a Bottleneck: Why the Physical AI Buildout Is Setting Up the Next Regime Shift</div>
+                <div class="muted">High value because it reframes AI from bubble risk to physical bottleneck, macro regime, memory/platform, IPP, and tokenization handoff risk.</div>
+                <div class="tags"><span class="tag">AI bottlenecks</span><span class="tag">physical capex</span><span class="tag">memory risk</span><span class="tag">power grid</span><span class="tag">oil and rates</span></div>
+              </td>
+              <td>AI Infrastructure<div class="muted">AI Market Structure, Macro Rates And Labor, Tokenization</div></td>
+              <td><span class="instrument">NVDA</span><span class="instrument">MRVL</span><span class="instrument">INTC</span><span class="instrument">MU</span><span class="instrument">VST</span><span class="instrument">SMH</span></td>
+              <td>Deep Dive + Watchlist<div class="muted">Research action, not trade action</div></td>
+              <td>Review after the AI rotation notes; decide whether to create watchlist checks for platform/connectivity versus memory and IPPs as defensive AI.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-jordi-ai-bottleneck-regime-shift-2026-05-24.html">Report</a>
+                <a href="notes/sig-2026-05-24-jordi-ai-bottleneck-regime-shift.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-05-24-jordi-ai-bottleneck-regime-shift">Copy</button>
+                <code>Mark reviewed sig-2026-05-24-jordi-ai-bottleneck-regime-shift</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="Jordi Visser Research" data-cluster="AI Market Structure" data-priority="94" data-date="2026-06-14">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-14-jordi-ai-mid-cycle"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">94</td>
+              <td class="number">6</td>
+              <td>2026-06-14</td>
+              <td>Jordi Visser Research</td>
+              <td>
+                <div class="title">The AI Mid-Cycle Slowdown: OpenAI, Anthropic, and the AI Price War</div>
+                <div class="muted">High thesis value because it explains AI rotation, model price compression, and physical-layer inflation.</div>
+                <div class="tags"><span class="tag">AI mid-cycle slowdown</span><span class="tag">model price compression</span><span class="tag">physical-layer inflation</span><span class="tag">hyperscaler rotation</span><span class="tag">materials</span></div>
+              </td>
+              <td>AI Market Structure<div class="muted">AI Infrastructure, Materials</div></td>
+              <td><span class="instrument">ENTG</span></td>
+              <td>AI thesis update + ENTG research<div class="muted">Thesis update, not trade action</div></td>
+              <td>Review thesis language and decide whether ENTG gets promoted to a watchlist candidate.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-jordi-ai-mid-cycle-slowdown-2026-06-14.html">Report</a>
+                <a href="notes/sig-2026-06-14-jordi-ai-mid-cycle.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-14-jordi-ai-mid-cycle">Copy</button>
+                <code>Mark reviewed sig-2026-06-14-jordi-ai-mid-cycle</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="22V Research" data-cluster="AI Infrastructure" data-priority="91" data-date="2026-06-18">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-18-22v-lower-oil"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">91</td>
+              <td class="number">2</td>
+              <td>2026-06-18</td>
+              <td>22V Research</td>
+              <td>
+                <div class="title">Idio Ideas Associated with Lower Commodity Prices</div>
+                <div class="muted">High investment relevance with ECL watchlist impact and Brazil/Hang Seng follow-up work.</div>
+                <div class="tags"><span class="tag">AI physical layer</span><span class="tag">input cost relief</span><span class="tag">implementation vehicle risk</span><span class="tag">China consumption weakness</span></div>
+              </td>
+              <td>AI Infrastructure<div class="muted">Lower oil, Brazil, China Risk</div></td>
+              <td><span class="instrument">ECL</span></td>
+              <td>Watchlist + implementation map<div class="muted">Research action, not trade action</div></td>
+              <td>Review ECL watchlist implication and decide whether to open Brazil ex-commodities implementation work.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-22v-lower-oil-ideas-2026-06-18.html">Report</a>
+                <a href="notes/sig-2026-06-18-22v-lower-oil.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-18-22v-lower-oil">Copy</button>
+                <code>Mark reviewed sig-2026-06-18-22v-lower-oil</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="22V Research" data-cluster="AI Market Structure" data-priority="88" data-date="2026-06-18">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-18-22v-openai-disclosure"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">88</td>
+              <td class="number">2</td>
+              <td>2026-06-18</td>
+              <td>22V Research</td>
+              <td>
+                <div class="title">Emerging Disclosure: OpenAI, Price Discovery, and the Path to the S-1</div>
+                <div class="muted">High thesis value for OpenAI disclosure monitoring and public-market beneficiary tracking.</div>
+                <div class="tags"><span class="tag">OpenAI disclosure</span><span class="tag">S-1 watch</span><span class="tag">AI economics</span><span class="tag">token pricing</span><span class="tag">cash burn</span></div>
+              </td>
+              <td>AI Market Structure<div class="muted">AI Infrastructure, Public-market beneficiaries</div></td>
+              <td><span class="instrument">ORCL</span><span class="instrument">CRWV</span></td>
+              <td>Disclosure watch + deep dive<div class="muted">Research action, not trade action</div></td>
+              <td>Create the OpenAI disclosure watch framework and decide whether ORCL/CRWV need separate watchlist checks.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-22v-openai-disclosure-2026-06-18.html">Report</a>
+                <a href="notes/sig-2026-06-18-22v-openai-disclosure.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-18-22v-openai-disclosure">Copy</button>
+                <code>Mark reviewed sig-2026-06-18-22v-openai-disclosure</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="Lyn Alden Research" data-cluster="Geopolitics" data-priority="86" data-date="2026-03-22">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-03-22-lyn-alden-flywheel-chaos"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">86</td>
+              <td class="number">6</td>
+              <td>2026-03-22</td>
+              <td>Lyn Alden Research</td>
+              <td>
+                <div class="title">March 2026 Newsletter: A Flywheel of Chaos</div>
+                <div class="muted">High-value macro stress framework for energy disruption, treasury volatility, Fed liquidity, war spending, and scarce-asset thesis review.</div>
+                <div class="tags"><span class="tag">gradual print</span><span class="tag">war funding</span><span class="tag">energy shock</span><span class="tag">Strait of Hormuz</span><span class="tag">treasury volatility</span></div>
+              </td>
+              <td>Geopolitics<div class="muted">Energy / Commodities, Rates / Credit, Macro Rates And Labor, Crypto / Bitcoin</div></td>
+              <td><span class="instrument">BTC</span><span class="instrument">GLD</span><span class="instrument">TLT</span></td>
+              <td>Macro Monitor<div class="muted">Monitoring action, not trade action</div></td>
+              <td>Create a macro stress monitor covering energy disruption, treasury yields, MOVE index, Fed balance sheet, repo/swap usage, employment, and war-funding requests.</td>
+              <td class="links">
+                <a href="reports/2026-03-22-lyn-alden-a-flywheel-of-chaos-signal-to-alpha.html">Report</a>
+                <a href="notes/sig-2026-03-22-lyn-alden-flywheel-chaos.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-03-22-lyn-alden-flywheel-chaos">Copy</button>
+                <code>Mark reviewed sig-2026-03-22-lyn-alden-flywheel-chaos</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="Lyn Alden Research" data-cluster="Portfolio Risk" data-priority="84" data-date="2026-06-04">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-04-lyn-alden-wild-west"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">84</td>
+              <td class="number">2</td>
+              <td>2026-06-04</td>
+              <td>Lyn Alden Research</td>
+              <td>
+                <div class="title">June 2026 Newsletter: The Wild West</div>
+                <div class="muted">High-value regime-fragmentation framework for portfolio resilience, hard-money allocation, custody, and AI information-risk review.</div>
+                <div class="tags"><span class="tag">regime fragmentation</span><span class="tag">three pillar portfolio</span><span class="tag">hard money resilience</span><span class="tag">AI information disorder</span><span class="tag">custody risk</span></div>
+              </td>
+              <td>Portfolio Risk<div class="muted">Geopolitics, Crypto / Bitcoin, Energy / Commodities, AI Market Structure</div></td>
+              <td><span class="instrument">BTC</span><span class="instrument">GLD</span><span class="instrument">TLT</span></td>
+              <td>Read Original + Monitor<div class="muted">Research action, not trade action</div></td>
+              <td>Review the Financial Master Plan against the three-pillar portfolio lens and create a custody/jurisdiction resilience checklist.</td>
+              <td class="links">
+                <a href="reports/2026-06-04-lyn-alden-the-wild-west-signal-to-alpha.html">Report</a>
+                <a href="notes/sig-2026-06-04-lyn-alden-wild-west.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-04-lyn-alden-wild-west">Copy</button>
+                <code>Mark reviewed sig-2026-06-04-lyn-alden-wild-west</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="Jordi Visser Research / 22V Research" data-cluster="AI Infrastructure" data-priority="83" data-date="2026-06-07">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-07-jordi-ai-rotation-not-bubble"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">83</td>
+              <td class="number">7</td>
+              <td>2026-06-07</td>
+              <td>Jordi Visser Research / 22V Research</td>
+              <td>
+                <div class="title">The Fireworks Show Is Over: Why This Is An AI Rotation, Not a Bubble Unwind</div>
+                <div class="muted">High relevance AI rotation signal with specific watchlist directions, but actions need live market and portfolio-context checks.</div>
+                <div class="tags"><span class="tag">AI rotation</span><span class="tag">memory crowding</span><span class="tag">optical networking</span><span class="tag">compute versus energy</span><span class="tag">application-layer AI</span></div>
+              </td>
+              <td>AI Infrastructure<div class="muted">AI Market Structure, Energy / Commodities, Healthcare / Biotech, Crypto / Bitcoin, Portfolio Risk</div></td>
+              <td><span class="instrument">MU</span><span class="instrument">MRVL</span><span class="instrument">LLY</span><span class="instrument">XOM</span><span class="instrument">CVX</span><span class="instrument">FLNC</span></td>
+              <td>Deep Dive + monitoring framework<div class="muted">Monitor + research</div></td>
+              <td>Create an AI rotation checklist separating memory risk, optical upside, energy, batteries, Bitcoin rails, and healthcare application-layer AI.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-jordi-ai-rotation-not-bubble-unwind-2026-06-07.html">Report</a>
+                <a href="notes/sig-2026-06-07-jordi-ai-rotation-not-bubble.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-07-jordi-ai-rotation-not-bubble">Copy</button>
+                <code>Mark reviewed sig-2026-06-07-jordi-ai-rotation-not-bubble</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="BG2 Pod via 22V Research" data-cluster="Space Economy" data-priority="79" data-date="2026-06-14">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-14-bg2-spacex-fable-ai-capex"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">79</td>
+              <td class="number">7</td>
+              <td>2026-06-14</td>
+              <td>BG2 Pod via 22V Research</td>
+              <td>
+                <div class="title">The SpaceX IPO, Fable 5, AI Capex Update &amp; Market Check w/ Gavin Baker, Andrew Fox &amp; Clark Tang</div>
+                <div class="muted">High relevance SpaceX/SPCX and AI infrastructure update, but podcast claims need primary-source and live-market verification.</div>
+                <div class="tags"><span class="tag">SpaceX</span><span class="tag">xAI</span><span class="tag">AI compute</span><span class="tag">orbital data centers</span><span class="tag">Cursor</span></div>
+              </td>
+              <td>Space Economy<div class="muted">AI Infrastructure, AI Market Structure, IPO Diligence</div></td>
+              <td><span class="instrument">SPCX</span><span class="instrument">NVDA</span><span class="instrument">GOOGL</span><span class="instrument">CRWV</span></td>
+              <td>Thesis update + IPO diligence<div class="muted">Update diligence</div></td>
+              <td>Merge into the existing SpaceX/SPCX diligence checklist and verify IPO, deal, valuation, and compute-revenue claims before any action.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-bg2-spacex-fable-ai-capex-market-check-2026-06-14.html">Report</a>
+                <a href="notes/sig-2026-06-14-bg2-spacex-fable-ai-capex.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-14-bg2-spacex-fable-ai-capex">Copy</button>
+                <code>Mark reviewed sig-2026-06-14-bg2-spacex-fable-ai-capex</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="22V Research" data-cluster="Space Economy" data-priority="72" data-date="2026-06-04">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-04-22v-spacex-ipo"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">72</td>
+              <td class="number">10</td>
+              <td>2026-06-04</td>
+              <td>22V Research</td>
+              <td>
+                <div class="title">The SpaceX IPO - A Catalyst-Rich AI and Space Story</div>
+                <div class="muted">High optionality but low current actionability; needs primary-source and live listing verification.</div>
+                <div class="tags"><span class="tag">SpaceX</span><span class="tag">IPO</span><span class="tag">orbital data centers</span><span class="tag">index inclusion</span><span class="tag">AI compute</span></div>
+              </td>
+              <td>Space Economy<div class="muted">AI Infrastructure, IPO Diligence</div></td>
+              <td><span class="instrument">SPCX</span></td>
+              <td>Watchlist + IPO diligence<div class="muted">Watchlist only</div></td>
+              <td>Create SPCX diligence checklist only if the listing/instrument is relevant and verifiable.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-22v-spacex-ipo-ai-space-2026-06-04.html">Report</a>
+                <a href="notes/sig-2026-06-04-22v-spacex-ipo.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-04-22v-spacex-ipo">Copy</button>
+                <code>Mark reviewed sig-2026-06-04-22v-spacex-ipo</code>
+              </td>
+            </tr>
+            
+            <tr class="ready" data-status="ready" data-provider="22V Research" data-cluster="Macro Rates And Labor" data-priority="34" data-date="2026-06-04">
+              <td class="check-cell"><input type="checkbox" class="review-check" data-review-id="sig-2026-06-04-22v-payroll-survey"  aria-label="Mark reviewed locally"></td>
+              <td><span class="status ready">ready</span></td>
+              <td class="number strong">34</td>
+              <td class="number">10</td>
+              <td>2026-06-04</td>
+              <td>22V Research</td>
+              <td>
+                <div class="title">22V Surveys: Investor Expectations Skew Towards Employment Data Beats</div>
+                <div class="muted">Useful for pattern learning, but the macro event has passed and no action is needed.</div>
+                <div class="tags"><span class="tag">payrolls</span><span class="tag">rates</span><span class="tag">risk-off threshold</span><span class="tag">good news is bad news</span><span class="tag">survey expectations</span></div>
+              </td>
+              <td>Macro Rates And Labor<div class="muted">Reaction Function, Survey</div></td>
+              <td></td>
+              <td>Macro monitor history<div class="muted">Archive as macro context</div></td>
+              <td>Optional archive review; compare actual payroll reaction later if useful.</td>
+              <td class="links">
+                <a href="reports/signal-to-alpha-22v-payroll-survey-risk-reaction-2026-06-04.html">Report</a>
+                <a href="notes/sig-2026-06-04-22v-payroll-survey.html">Note</a>
+                <button type="button" data-command="Mark reviewed sig-2026-06-04-22v-payroll-survey">Copy</button>
+                <code>Mark reviewed sig-2026-06-04-22v-payroll-survey</code>
+              </td>
+            </tr>
+            
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script>
+    const table = document.querySelector('#queue tbody');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    const search = document.querySelector('#search');
+    const statusFilter = document.querySelector('#statusFilter');
+    const clusterFilter = document.querySelector('#clusterFilter');
+    const notice = document.querySelector('#notice');
+
+    function applyFilters() {
+      const q = search.value.toLowerCase();
+      const status = statusFilter.value;
+      const cluster = clusterFilter.value;
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const okSearch = !q || text.includes(q);
+        const okStatus = !status || row.dataset.status === status;
+        const okCluster = !cluster || row.dataset.cluster === cluster;
+        row.classList.toggle('hidden', !(okSearch && okStatus && okCluster));
+      });
+    }
+
+    function sortRows(kind) {
+      const sorted = rows.slice().sort((a, b) => {
+        if (kind === 'date') return b.dataset.date.localeCompare(a.dataset.date);
+        if (kind === 'aging') return Number(b.children[3].innerText) - Number(a.children[3].innerText);
+        return Number(b.dataset.priority) - Number(a.dataset.priority);
+      });
+      sorted.forEach(row => table.appendChild(row));
+    }
+
+    document.querySelectorAll('[data-sort]').forEach(el => el.addEventListener('click', () => sortRows(el.dataset.sort)));
+    [search, statusFilter, clusterFilter].forEach(el => el.addEventListener('input', applyFilters));
+    document.querySelectorAll('.review-check').forEach(cb => cb.addEventListener('change', event => {
+      const id = event.target.dataset.reviewId;
+      notice.textContent = event.target.checked
+        ? `Local tick set. To make permanent, tell Code77: Mark reviewed ${id}.`
+        : `Local tick cleared. To make permanent, tell Code77: Mark ready ${id}.`;
+    }));
+    document.querySelectorAll('button[data-command]').forEach(button => button.addEventListener('click', async () => {
+      const command = button.dataset.command;
+      try { await navigator.clipboard.writeText(command); notice.textContent = `Copied command: ${command}`; }
+      catch { notice.textContent = `Command: ${command}`; }
+    }));
+  </script>
+</body>
+</html>
