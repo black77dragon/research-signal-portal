@@ -1,6 +1,6 @@
 # Research Portal Prototype
 
-Generated: 2026-06-26T17:51
+Generated: 2026-06-26T21:37
 
 This folder is a static publishing bundle for the Financial Master Plan Research Review Queue.
 
