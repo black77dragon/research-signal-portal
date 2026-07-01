@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memory per Token Optimizations. Where are we, and how much more room do we have?</title>
+  <style>
+    body { margin:0; background:#eef2f6; color:#16202e; font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+    main { max-width:960px; margin:0 auto; padding:26px; }
+    header { background:#132238; color:#fff; padding:24px 28px; border-bottom:5px solid #0f766e; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    .meta { color:#dce7f5; display:flex; flex-wrap:wrap; gap:10px; }
+    .pill { border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:4px 9px; }
+    pre { white-space:pre-wrap; background:#fff; border:1px solid #d8e0ea; padding:18px; overflow:auto; }
+    a { color:#245f9f; font-weight:700; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Memory per Token Optimizations. Where are we, and how much more room do we have?</h1>
+    <div class="meta">
+      <span class="pill">UncoverAlpha / Rihard Jarc</span>
+      <span class="pill">2026-06-11</span>
+      <span class="pill">sig-2026-06-11-uncoveralpha-memory-per-token-optimizations</span>
+    </div>
+  </header>
+  <main>
+    <p><a href="../research_review_dashboard.html">Back to dashboard</a></p>
+    <pre># 2026-06-11 UncoverAlpha - Memory Per Token Optimizations
+
+## 60-Second Verdict
+
+UncoverAlpha argues that inference economics increasingly hinge on memory bandwidth and KV-cache capacity, especially for long-context agentic workloads. The visible preview is valuable because it explains why HBM and memory efficiency matter, but it is incomplete because the article stops at the subscriber prompt just as the optimization stack begins.
+
+## Why It Matters
+
+This helps explain the physical-layer AI thesis at a more technical level: memory bandwidth, KV cache, batching, and long-context agents are central to inference economics.
+
+## Actions
+
+- Add as second-tier support for the AI memory-bottleneck thesis.
+- Use the note when reviewing HBM, GPU memory, networking, and cooling suppliers in the Core Dip Monitor.
+- Do not promote a trade from the partial source.
+- If full body becomes available, rerun extraction to capture the complete optimization-stack section.
+
+## Review
+
+- Status: `ready`
+- Review id: `sig-2026-06-11-uncoveralpha-memory-per-token-optimizations`
+- Priority: `84`
+
+## Links
+
+- HTML report: [[90 HTML Reports/signal-to-alpha-uncoveralpha-memory-per-token-optimizations-2026-06-11.html|Open full report]]
+- Provider: [[04 Providers/UncoverAlpha|UncoverAlpha / Rihard Jarc]]
+
+## Evidence Anchors
+
+- The source states inference is increasingly constrained by memory capacity and bandwidth.
+- It explains prefill versus decode and why decode is memory-bound.
+- It describes how agentic workloads expand context and KV-cache demand.
+- Chrome showed the post as PAID, so the processed text is a public-preview capture.
+
+## Source Handling
+
+Processed from UncoverAlpha public web/RSS capture and Chrome-visible article preview. The source is public but incomplete in the current browser profile because Chrome showed a subscriber prompt after the Continuous batching section. No email, DragonShieldNG holding, trade, sizing policy, risk limit, or official portfolio truth was changed.</pre>
+  </main>
+</body>
+</html>
